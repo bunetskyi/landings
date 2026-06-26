@@ -161,38 +161,8 @@
 <!-- 4 — diagram -->
 <h2><span class="n">4</span>Схема: як рішення проходить рівні</h2>
 <div class="mermaid-card">
-<pre class="mermaid" id="mmd-schema">
-flowchart TB
-  CUST["Клієнт і точки контакту"]
-  DATA["Дані про клієнта"]
-  D0["D0 · Що дозволено і доступно"]
-  D1["D1 · Decision Core — важіль і intent"]
-  D2["D2 · Domain Engines — параметри"]
-  D3["D3 · Композиція фінального пакета"]
-  D4["D4 · Доставка і показ"]
-  FB["Навчання на результаті"]
-  CUST -->|запит| D0
-  DATA -->|дані| D0
-  DATA -->|дані| D1
-  D0 -->|дозволені важелі| D1
-  D1 -->|важіль і intent| D2
-  D2 -->|параметри| D3
-  D3 -->|фінальний пакет| D4
-  D4 -->|показ і доставка| CUST
-  CUST -.->|події| FB
-  D4 -.->|результат| FB
-  FB -->|оновлення| DATA
-  classDef cu fill:#f1f5f9,stroke:#64748b,stroke-width:1.5px,color:#0f172a;
-  classDef dt fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px,color:#075985;
-  classDef g fill:#fef2f2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d;
-  classDef dc fill:#f5f3ff,stroke:#7c3aed,stroke-width:2px,color:#4c1d95;
-  classDef co fill:#fffbeb,stroke:#d97706,stroke-width:2px,color:#7c2d12;
-  classDef sp fill:#eef2ff,stroke:#4f46e5,stroke-width:2px,color:#312e81;
-  classDef cm fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#14532d;
-  class CUST cu; class DATA,FB dt; class D0 g; class D1 dc; class D2 co; class D3 sp; class D4 cm;
-</pre>
-<!-- Fallback: чиста HTML-схема, якщо Mermaid не завантажився -->
-<div id="mmd-fallback" class="fallback" style="display:none">
+<!-- Чиста нативна HTML-схема (без Mermaid) — гарантовано рендериться однаково всюди -->
+<div id="mmd-fallback" class="fallback">
   <div class="fb-wrap">
     <div class="fb-box cu">Клієнт і точки контакту</div>
     <div class="fb-arrow">↓ <span>запит</span></div>
@@ -281,25 +251,5 @@ flowchart TB
 </footer>
 
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
-<script>
-  function showFallback(){
-    var fb=document.getElementById('mmd-fallback');
-    var mm=document.getElementById('mmd-schema');
-    if(fb) fb.style.display='block';
-    if(mm) mm.style.display='none';
-  }
-  try{
-    if(window.mermaid){
-      mermaid.initialize({ startOnLoad:true, securityLevel:'loose', flowchart:{ useMaxWidth:true, htmlLabels:true } });
-    } else { showFallback(); }
-  }catch(e){ showFallback(); }
-  window.addEventListener('load', function(){
-    setTimeout(function(){
-      var mm=document.getElementById('mmd-schema');
-      if(!mm || !mm.querySelector('svg')){ showFallback(); }
-    }, 1500);
-  });
-</script>
 </body>
 </html>
