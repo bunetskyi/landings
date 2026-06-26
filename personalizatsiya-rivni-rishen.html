@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>COMFY Персоналізація — модель рівнів рішень (D0–D4)</title>
+<style>
+  :root{
+    --bg:#f8fafc;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;
+    --co:#d97706;--co-bg:#fffbeb;--dc:#7c3aed;--dc-bg:#f5f3ff;
+    --comm:#16a34a;--comm-bg:#f0fdf4;--data:#0284c7;--data-bg:#f0f9ff;
+    --gate:#dc2626;--gate-bg:#fef2f2;--split:#4f46e5;--split-bg:#eef2ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;}
+  .wrap{max-width:1020px;margin:0 auto;padding:40px 26px 90px;}
+  header h1{font-size:28px;margin:0 0 6px;letter-spacing:-.02em;}
+  header .sub{color:var(--muted);font-size:15px;margin:0;}
+  h2{font-size:21px;margin:46px 0 4px;}
+  h2 .n{color:var(--muted);font-weight:700;margin-right:8px;}
+  p{margin:10px 0;} .lead{color:#334155;font-size:15px;max-width:850px;}
+  .big-idea{background:#0f172a;color:#e2e8f0;border-radius:14px;padding:20px 24px;margin-top:16px;}
+  .big-idea b{color:#fff;}
+  .zones{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:16px;}
+  .zone{border-radius:14px;padding:18px;border:1px solid;}
+  .zone h3{margin:0 0 2px;font-size:16px;}
+  .zone .q{font-size:12.5px;font-weight:700;font-style:italic;margin:0 0 10px;}
+  .zone p{font-size:13px;margin:0;color:#334155;}
+  .z-dc{background:var(--dc-bg);border-color:#ddd6fe;} .z-dc h3,.z-dc .q{color:var(--dc);}
+  .z-co{background:var(--co-bg);border-color:#fde68a;} .z-co h3,.z-co .q{color:var(--co);}
+  .z-comm{background:var(--comm-bg);border-color:#bbf7d0;} .z-comm h3,.z-comm .q{color:var(--comm);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:14px;box-shadow:0 1px 2px rgba(15,23,42,.04);}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
+  th,td{text-align:left;padding:11px 11px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{background:#f1f5f9;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);}
+  td.lvl{font-weight:800;white-space:nowrap;font-size:14px;}
+  .own{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;}
+  .own.dc{background:var(--dc-bg);color:var(--dc);} .own.co{background:var(--co-bg);color:var(--co);}
+  .own.comm{background:var(--comm-bg);color:var(--comm);} .own.gate{background:var(--gate-bg);color:var(--gate);}
+  .own.split{background:var(--split-bg);color:var(--split);}
+  .mermaid-card{padding:16px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;margin-top:14px;}
+  pre.mermaid{margin:0;background:none;border:none;white-space:pre;text-align:center;}
+  pre.mermaid:not([data-processed="true"]){visibility:hidden;height:0;overflow:hidden;}
+  pre.mermaid[data-processed="true"]{visibility:visible;height:auto;}
+  /* fallback */
+  .fallback{font-size:13.5px;}
+  .fb-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .fb-box{border-radius:11px;padding:11px 16px;font-weight:700;text-align:center;border:2px solid;min-width:280px;}
+  .fb-box small{display:block;font-weight:500;font-size:11.5px;opacity:.8;margin-top:2px;}
+  .fb-box.cu{background:#f1f5f9;border-color:#64748b;color:#0f172a;}
+  .fb-box.dt{background:var(--data-bg);border-color:var(--data);color:#075985;}
+  .fb-box.g{background:var(--gate-bg);border-color:var(--gate);color:#7f1d1d;}
+  .fb-box.dc{background:var(--dc-bg);border-color:var(--dc);color:#4c1d95;}
+  .fb-box.co{background:var(--co-bg);border-color:var(--co);color:#7c2d12;}
+  .fb-box.sp{background:var(--split-bg);border-color:var(--split);color:#312e81;}
+  .fb-box.cm{background:var(--comm-bg);border-color:var(--comm);color:#14532d;}
+  .fb-arrow{color:var(--muted);font-size:12.5px;font-weight:600;}
+  .fb-arrow span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px;}
+  .fb-side{font-size:12px;color:var(--muted);margin-top:6px;text-align:center;max-width:560px;}
+  .pp{border:1px solid var(--line);border-left:4px solid var(--dc);border-radius:10px;padding:14px 18px;margin-top:12px;background:#fff;}
+  .pp .row{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;margin:7px 0;}
+  .pp .row .who{flex:0 0 92px;font-weight:800;font-size:12px;}
+  .ex .step{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;margin:8px 0;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;}
+  .ex .step .lv{flex:0 0 38px;font-weight:800;font-size:14px;text-align:center;}
+  .lv.d0{color:var(--gate);} .lv.d1{color:var(--dc);} .lv.d2{color:var(--co);} .lv.d3{color:var(--split);} .lv.d4{color:var(--comm);} .lv.fb{color:var(--data);}
+  .gold{background:#0f172a;color:#e2e8f0;border-radius:14px;padding:20px 24px;margin-top:16px;}
+  .gold h3{color:#fff;margin:0 0 12px;font-size:18px;}
+  .gold ul{margin:0;padding-left:0;list-style:none;}
+  .gold li{padding:9px 0;border-bottom:1px solid #1e293b;font-size:14px;}
+  .gold li:last-child{border-bottom:none;} .gold b{color:#fff;}
+  .cross{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;}
+  .cbox{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fff;}
+  .cbox h4{margin:0 0 6px;font-size:14px;} .cbox p{font-size:13px;margin:0;color:#334155;}
+  .concl{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+  .concl .cbox ul{margin:0;padding-left:18px;} .concl .cbox li{font-size:13px;margin:4px 0;}
+  footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;}
+  @media(max-width:780px){.zones,.cross,.concl{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Персоналізація COMFY: хто за яке рішення відповідає</h1>
+  <p class="sub">Керівнича версія для CPO, директорів маркетингу й комерції та Product Owner-ів · модель рівнів рішень</p>
+</header>
+
+<!-- BIG IDEA -->
+<div class="big-idea">
+  <p style="margin:0"><b>Головна ідея.</b> Відповідальність не можна ділити за продуктом — «Personal Prices», «Credit», «Delivery», «Bonus», «Recommendations». Це призводить до нескінченних суперечок «чиє це». Правильно ділити <b>за типом рішення</b>: кожне персоналізоване рішення складається з п'яти кроків (D0–D4), і кожен крок має чіткого власника. Тоді те саме правило працює однаково для ціни, кредиту, доставки, бонусу й рекомендації.</p>
+</div>
+
+<!-- 1 — three zones -->
+<h2><span class="n">1</span>Три зони — коротко</h2>
+<div class="zones">
+  <div class="zone z-dc"><h3>Decision Core</h3><p class="q">«Що зробити для клієнта?»</p><p>Знає клієнта (цінність, інтереси, ризик). Вирішує, <b>який важіль</b> застосувати й <b>навіщо</b> (intent). Не рахує точний розмір знижки.</p></div>
+  <div class="zone z-co"><h3>Commercial Optimizer / Domain Engines</h3><p class="q">«Який оптимальний параметр?»</p><p>Рахує економіку: розмір знижки, умови кредиту, доставку, бонус — у межах intent від Decision Core. Володіє маржею.</p></div>
+  <div class="zone z-comm"><h3>Communication Platform</h3><p class="q">«Коли, де і як доставити?»</p><p>Доносить готове рішення: канал, час, частота, згода. Не обирає оффер і не рахує економіку.</p></div>
+</div>
+
+<!-- 2 — reframe -->
+<h2><span class="n">2</span>Ключовий зсув: власність за типом рішення, а не за продуктом</h2>
+<p class="lead">«Хто володіє Personal Prices?» — неправильне питання, бо всередині нього сидить кілька різних рішень з різними власниками. Правильне питання: <b>«хто володіє кожним типом рішення?»</b> Власність визначається не алгоритмом і не даними, а трьома речами:</p>
+<div class="card">
+<p style="margin:0"><b>1 · Objective</b> — що саме оптимізує цей крок? (маржа → Optimizer; цінність клієнта → Decision Core; доставка/згода → Communication)<br/>
+<b>2 · Accountability</b> — чий P&L / KPI / юридичний ризик страждає, коли крок помиляється?<br/>
+<b>3 · Change-driver</b> — хто змінюватиме це протягом наступних 5 років і чому?</p>
+<p style="margin:12px 0 0;font-size:13.5px;color:var(--muted)">Тому навіть однаковий алгоритм (MAB / bandit) належить різним зонам залежно від того, що він оптимізує: якщо reward — це <b>contribution margin</b> → це Pricing / Commercial Optimizer; якщо <b>engagement каналу</b> → Communication; якщо <b>вибір дії / цінність клієнта</b> → Decision Core.</p>
+</div>
+
+<!-- 3 — D0-D4 table -->
+<h2><span class="n">3</span>П'ять рівнів рішення (D0–D4)</h2>
+<div class="card" style="padding:6px 6px 2px;overflow:auto">
+<table>
+<thead><tr><th>Рівень</th><th>Питання</th><th>Власник</th><th>Приклад</th><th>Результат</th></tr></thead>
+<tbody>
+<tr>
+  <td class="lvl" style="color:var(--gate)">D0<br/>Eligibility</td>
+  <td>Що взагалі дозволено і доступно зараз?</td>
+  <td><span class="own co">Domain engines</span> (availability/cost) + <span class="own gate">Policy</span> (legal, vendor, consent, frequency, margin hard rules)</td>
+  <td>Чи дозволена персональна ціна на цей SKU; чи доступний кредит; чи є згода</td>
+  <td>Набір <b>дозволених важелів</b> (відсікли заборонене й недоступне)</td>
+</tr>
+<tr>
+  <td class="lvl" style="color:var(--dc)">D1<br/>Lever + Intent</td>
+  <td>Який важіль використати для цього клієнта і навіщо?</td>
+  <td><span class="own dc">Decision Core</span></td>
+  <td>«Цьому клієнту доречний price lever, intent — утримання, він цінний»</td>
+  <td>Обраний важіль + <b>intent</b> (ціль і дозволена «глибина» інвестиції)</td>
+</tr>
+<tr>
+  <td class="lvl" style="color:var(--co)">D2<br/>Parameter</td>
+  <td>Який оптимальний параметр для обраного важеля?</td>
+  <td><span class="own co">Відповідний engine</span> (Pricing / Credit / Delivery / Bonus / Recommendation)</td>
+  <td>Pricing Engine рахує знижку 2% (або 0%) під intent від Decision Core</td>
+  <td>Оптимальний <b>параметр</b> (розмір, умови, ранжування) під маржу</td>
+</tr>
+<tr>
+  <td class="lvl" style="color:var(--split)">D3<br/>Composition</td>
+  <td>Якщо вижило кілька дій — який фінальний пакет показати?</td>
+  <td><span class="own split">Optimizer</span> (економіка пакета) + <span class="own dc">Decision Core</span> (фінальний вибір / veto)</td>
+  <td>Перевірка: ціна + доставка + бонус разом не вбивають маржу</td>
+  <td><b>Фінальна дія / пакет</b> для клієнта</td>
+</tr>
+<tr>
+  <td class="lvl" style="color:var(--comm)">D4<br/>Execution</td>
+  <td>Коли, де і як доставити рішення клієнту?</td>
+  <td><span class="own comm">Communication</span> (outbound) + <span class="own gate">Touchpoint</span> (inbound показ)</td>
+  <td>Push у правильний час, або показ пропозиції на сторінці товару</td>
+  <td>Доставлене / показане рішення + факт результату</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cross">
+  <div class="cbox"><h4>Policy — наскрізно на D0–D3</h4><p>Legal, vendor restrictions, margin floor, виключені SKU, consent, frequency, комерційні hard rules. Ставить <b>жорсткі межі</b>, але не оптимізує.</p></div>
+  <div class="cbox"><h4>Experimentation / Holdout — наскрізно на всіх рівнях</h4><p>Assignment, holdout, атрибуція reward. Слідкує, щоб різні bandit-моделі <b>не конфліктували</b> між собою і щоб ефект був вимірюваний.</p></div>
+</div>
+
+<!-- 4 — diagram -->
+<h2><span class="n">4</span>Схема: як рішення проходить рівні</h2>
+<div class="mermaid-card">
+<pre class="mermaid" id="mmd-schema">
+flowchart TB
+  CUST["Клієнт і точки контакту"]
+  DATA["Дані про клієнта"]
+  D0["D0 · Що дозволено і доступно"]
+  D1["D1 · Decision Core — важіль і intent"]
+  D2["D2 · Domain Engines — параметри"]
+  D3["D3 · Композиція фінального пакета"]
+  D4["D4 · Доставка і показ"]
+  FB["Навчання на результаті"]
+  CUST -->|запит| D0
+  DATA -->|дані| D0
+  DATA -->|дані| D1
+  D0 -->|дозволені важелі| D1
+  D1 -->|важіль і intent| D2
+  D2 -->|параметри| D3
+  D3 -->|фінальний пакет| D4
+  D4 -->|показ і доставка| CUST
+  CUST -.->|події| FB
+  D4 -.->|результат| FB
+  FB -->|оновлення| DATA
+  classDef cu fill:#f1f5f9,stroke:#64748b,stroke-width:1.5px,color:#0f172a;
+  classDef dt fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px,color:#075985;
+  classDef g fill:#fef2f2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d;
+  classDef dc fill:#f5f3ff,stroke:#7c3aed,stroke-width:2px,color:#4c1d95;
+  classDef co fill:#fffbeb,stroke:#d97706,stroke-width:2px,color:#7c2d12;
+  classDef sp fill:#eef2ff,stroke:#4f46e5,stroke-width:2px,color:#312e81;
+  classDef cm fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#14532d;
+  class CUST cu; class DATA,FB dt; class D0 g; class D1 dc; class D2 co; class D3 sp; class D4 cm;
+</pre>
+<!-- Fallback: чиста HTML-схема, якщо Mermaid не завантажився -->
+<div id="mmd-fallback" class="fallback" style="display:none">
+  <div class="fb-wrap">
+    <div class="fb-box cu">Клієнт і точки контакту</div>
+    <div class="fb-arrow">↓ <span>запит</span></div>
+    <div class="fb-box g">D0 · Що дозволено і доступно<small>engines: availability/cost · Policy: legal/vendor/consent/margin</small></div>
+    <div class="fb-arrow">↓ <span>дозволені важелі</span></div>
+    <div class="fb-box dc">D1 · Decision Core<small>який важіль + intent</small></div>
+    <div class="fb-arrow">↓ <span>важіль і intent</span></div>
+    <div class="fb-box co">D2 · Domain Engines<small>оптимальний параметр (знижка, кредит, доставка, бонус, ранжування)</small></div>
+    <div class="fb-arrow">↓ <span>параметри</span></div>
+    <div class="fb-box sp">D3 · Композиція фінального пакета<small>Optimizer: економіка пакета · Decision Core: фінальний вибір</small></div>
+    <div class="fb-arrow">↓ <span>фінальний пакет</span></div>
+    <div class="fb-box cm">D4 · Доставка і показ<small>Communication (outbound) · Touchpoint (inbound)</small></div>
+    <div class="fb-side">Дані про клієнта живлять D0 і D1 · Результат (покупки, реакція) повертається у дані та експерименти → навчання</div>
+  </div>
+</div>
+</div>
+
+<!-- 5 — Personal Prices -->
+<h2><span class="n">5</span>Що це означає для Personal Prices</h2>
+<p class="lead">«Personal Prices» як продукт <b>не належить повністю одній зоні</b>. Він розкладається на рівні:</p>
+<div class="pp">
+  <div class="row"><span class="who" style="color:var(--dc)">Decision Core</span><span>вирішує, чи взагалі використовувати <b>price lever</b> для цього клієнта і з яким <b>intent</b> (утримання, залучення, захист маржі).</span></div>
+  <div class="row"><span class="who" style="color:var(--co)">Pricing Engine</span><span>рахує <b>оптимальний розмір знижки</b> (напр. 2%, або 0%, якщо клієнт купить і так). MAB LinTS живе тут, бо його reward оптимізує contribution margin.</span></div>
+  <div class="row"><span class="who" style="color:var(--gate)">Policy</span><span>ставить <b>hard limits</b>: margin floor, vendor restrictions, виключені SKU, legal.</span></div>
+  <div class="row"><span class="who" style="color:var(--dc)">Decision Core</span><span>приймає <b>фінальне рішення серед усіх важелів</b> (ціна vs кредит vs бонус vs нічого) і може накласти strategy veto.</span></div>
+  <div class="row"><span class="who" style="color:var(--comm)">Comm / Touchpoint</span><span><b>доставляє або показує</b> готову пропозицію клієнту.</span></div>
+</div>
+<p class="lead" style="margin-top:12px"><b>Важливо:</b> bandit оптимізує маржу — тому належить Pricing Engine. Але <b>контекст</b> (LTV, propensity, elasticity, стратегічний intent) дає Decision Core. Алгоритм — у Pricing, «мозок ситуації» — у Decision Core.</p>
+
+<!-- 6 — example -->
+<h2><span class="n">6</span>Приклад: клієнт відкрив сторінку товару (PDP)</h2>
+<div class="ex">
+  <div class="step"><span class="lv d0">D0</span><span>Перевіряємо, чи цей SKU дозволений для персональних цін, чи немає маржинальних або vendor-обмежень, чи є згода. Залишаються лише дозволені важелі.</span></div>
+  <div class="step"><span class="lv d1">D1</span><span><b>Decision Core</b> вирішує, що для цього клієнта доречний price lever, та задає intent (наприклад, «цінний клієнт, утримання, можна трохи інвестувати»).</span></div>
+  <div class="step"><span class="lv d2">D2</span><span><b>Pricing Engine</b> рахує оптимальну знижку під цей intent — наприклад 2%. Або <b>0%</b>, якщо клієнт купить і без знижки.</span></div>
+  <div class="step"><span class="lv d3">D3</span><span><b>Decision Core + Optimizer</b> перевіряють фінальний пакет (ціна + доставка + бонус разом), щоб не вбити маржу, і обирають найкращу дію.</span></div>
+  <div class="step"><span class="lv d4">D4</span><span><b>Сайт</b> показує готову пропозицію клієнту на сторінці товару.</span></div>
+  <div class="step"><span class="lv fb">↺</span><span><b>Зворотний зв'язок:</b> результат (купив / ні / реакція) повертається у дані та експерименти — система вчиться.</span></div>
+</div>
+
+<!-- 7 — golden rules -->
+<h2><span class="n">7</span>Золоті правила розділення</h2>
+<div class="gold">
+  <ul>
+    <li><b>Decision Core</b> володіє вибором важеля й intent — <b>не</b> точним економічним параметром.</li>
+    <li><b>Commercial Optimizer</b> володіє оптимізацією економічного параметра — <b>не</b> стратегією клієнта.</li>
+    <li><b>Communication Platform</b> володіє доставкою — <b>не</b> вибором офера.</li>
+    <li><b>Policy</b> володіє жорсткими межами — <b>не</b> оптимізацією.</li>
+    <li><b>Experimentation</b> володіє чистотою тестів — <b>не</b> бізнес-ціллю.</li>
+    <li><b>No Action</b> — це базовий рівень, а не «ще один важіль». Перемагає, коли жодна дія не проходить поріг.</li>
+  </ul>
+</div>
+
+<!-- 8 — conclusion -->
+<h2><span class="n">8</span>Висновок для керівників</h2>
+<div class="concl">
+  <div class="cbox"><h4>Що володіє кожна команда</h4><ul>
+    <li><b>Decision Core</b> — вибір важеля + intent (D1) і фінальна арбітражна перевірка (D3).</li>
+    <li><b>Optimizer / Engines</b> — параметри й маржа (D2) + економіка пакета (D3).</li>
+    <li><b>Communication</b> — доставка (D4).</li>
+    <li><b>Policy</b> — межі (D0–D3). <b>Experimentation</b> — чистота тестів.</li>
+  </ul></div>
+  <div class="cbox"><h4>Де відбуваються передачі (handoffs)</h4><ul>
+    <li>D0 → D1: «ось дозволені важелі».</li>
+    <li>D1 → D2: «цей важіль, з таким intent».</li>
+    <li>D2 → D3: «ось оптимальний параметр».</li>
+    <li>D3 → D4: «віднеси цей фінальний пакет».</li>
+  </ul></div>
+  <div class="cbox"><h4>Що команди мають узгодити</h4><ul>
+    <li>Єдині цифри маржі та LTV для всіх.</li>
+    <li>Що означає intent і яка дозволена «глибина» інвестиції.</li>
+    <li>Один профіль клієнта як спільне джерело правди.</li>
+    <li>Як міряємо результат, щоб не рахувати ефект двічі.</li>
+  </ul></div>
+  <div class="cbox"><h4>Що НЕ можна дублювати</h4><ul>
+    <li>Оптимізацію економіки — лише в Engines.</li>
+    <li>Вибір важеля й intent — лише в Decision Core.</li>
+    <li>Доставку (канал/час) — лише в Communication.</li>
+    <li>Жорсткі межі — лише в Policy.</li>
+  </ul></div>
+</div>
+<p class="lead" style="margin-top:16px"><b>Одним реченням:</b> ділимо відповідальність не за продуктом, а за типом рішення. Decision Core обирає <i>важіль і навіщо</i>, Engines рахують <i>оптимальний параметр і маржу</i>, Composition перевіряє <i>пакет цілком</i>, Communication <i>доставляє</i>, Policy тримає <i>межі</i>. Тоді одне правило працює однаково для ціни, кредиту, доставки, бонусу й рекомендації.</p>
+
+<footer>
+  COMFY · Персоналізація: модель рівнів рішень D0–D4 (керівнича версія). Замінює спрощену версію «три зони». Власність визначається objective, accountability і change-driver — не алгоритмом і не даними.
+</footer>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  function showFallback(){
+    var fb=document.getElementById('mmd-fallback');
+    var mm=document.getElementById('mmd-schema');
+    if(fb) fb.style.display='block';
+    if(mm) mm.style.display='none';
+  }
+  try{
+    if(window.mermaid){
+      mermaid.initialize({ startOnLoad:true, securityLevel:'loose', flowchart:{ useMaxWidth:true, htmlLabels:true } });
+    } else { showFallback(); }
+  }catch(e){ showFallback(); }
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      var mm=document.getElementById('mmd-schema');
+      if(!mm || !mm.querySelector('svg')){ showFallback(); }
+    }, 1500);
+  });
+</script>
+</body>
+</html>
